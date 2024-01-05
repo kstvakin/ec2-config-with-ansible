@@ -33,6 +33,7 @@ steps:
 
 - script: |
     # cd $(System.DefaultWorkingDirectory)/ansible
+    ls ~/aws/aws_keys
     ls $(HOME)/aws/aws_keys
     # ansible-playbook playbooks/install-docker.yml
     # ansible-playbook playbooks/docker-swarm-init.yml
