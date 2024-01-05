@@ -32,6 +32,7 @@ steps:
   displayName: 'Install Ansible'
 
 - script: |
+    chmod 400 $(HOME)/aws/aws_keys/administrator.pem
     cd $(System.DefaultWorkingDirectory)/ansible
     ansible-playbook playbooks/install-docker.yml
     ansible-playbook playbooks/docker-swarm-init.yml
