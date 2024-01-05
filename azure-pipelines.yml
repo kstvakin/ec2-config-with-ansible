@@ -1,0 +1,38 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: |
+    mkdir -p '$(HOME)/aws/aws_keys'
+  displayName: 'Create a directory for aws key pair'
+
+- task: DownloadSecureFile@1
+  name: aws_key_pair
+  displayName: 'Download AWS key pair'
+  inputs:
+    secureFile: 'administrator.pem'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Agent.TempDirectory)'
+    Contents: '**/administrator.pem'
+    TargetFolder: '$(HOME)/aws/aws_keys'
+
+- task: UseDotNet@2
+  inputs:
+    version: '2.2.x'
+
+- script: |
+    sudo apt-get update
+    sudo apt-get install -y python3-pip
+    sudo pip3 install ansible
+  displayName: 'Install Ansible'
+
+- script: |
+    cd $(System.DefaultWorkingDirectory)/ansible
+    ansible-playbook playbooks/install-docker.yml
+    ansible-playbook playbooks/docker-swarm-init.yml
+  displayName: 'Run Ansible Playbook'
